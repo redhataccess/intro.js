@@ -335,3 +335,19 @@ tr.introjs-showElement>th {
 .le-ie9 .introjs-fixParent {
     position: relative !important
 }
+
+.introjs-docked .introjs-tooltip {
+    position: fixed;
+    top: initial !important;
+    left: initial !important;
+    bottom: 0 !important;
+    right: 0 !important;
+}
+
+.introjs-docked .introjs-arrow {
+    display: none !important;
+}
+
+.introjs-nextsteptitle:before {
+  content: 'Next: ';
+}

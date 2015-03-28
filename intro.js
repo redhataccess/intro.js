@@ -30,6 +30,8 @@
     this._targetElement = obj;
 
     this._options = {
+      /* title for the introduction */
+      title: '',
       /* Next button label in tooltip box */
       nextLabel: 'Next &rarr;',
       /* Previous button label in tooltip box */
@@ -63,9 +65,11 @@
       /* Set the overlay opacity */
       overlayOpacity: 0.8,
       /* Precedence of positions, when auto is enabled */
-      positionPrecedence: ["bottom", "top", "right", "left"],
+      positionPrecedence: ['bottom', 'top', 'right', 'left'],
       /* Disable an interaction with element? */
-      disableInteraction: false
+      disableInteraction: false,
+      /* Dock the tour guide */
+      dock: false
     };
   }
 
@@ -690,6 +694,8 @@
     if (oldHelperLayer != null) {
       var oldHelperNumberLayer = oldReferenceLayer.querySelector('.introjs-helperNumberLayer'),
           oldtooltipLayer      = oldReferenceLayer.querySelector('.introjs-tooltiptext'),
+          oldstepTitleLayer    = oldReferenceLayer.querySelector('.introjs-steptitle'),
+          oldNextStepLayer     = oldReferenceLayer.querySelector('.introjs-nextsteptitle'),
           oldArrowLayer        = oldReferenceLayer.querySelector('.introjs-arrow'),
           oldtooltipContainer  = oldReferenceLayer.querySelector('.introjs-tooltip'),
           skipTooltipButton    = oldReferenceLayer.querySelector('.introjs-skipbutton'),
@@ -737,8 +743,24 @@
         }
         //set current tooltip text
         oldtooltipLayer.innerHTML = targetElement.intro;
+
+        if (targetElement.title) {
+          oldstepTitleLayer.style.display = 'block';
+          oldstepTitleLayer.innerHTML = targetElement.title;
+        } else {
+          oldstepTitleLayer.style.display = 'none';
+        }
+
+        var nextStep = self.getNextStep();
+        if (nextStep && nextStep.title) {
+          oldNextStepLayer.style.display = 'block';
+          oldNextStepLayer.innerHTML = nextStep.title;
+        } else {
+          oldNextStepLayer.style.display = 'none';
+        }
+
         //set the tooltip position
-        oldtooltipContainer.style.display = "block";
+        oldtooltipContainer.style.display = 'block';
         _placeTooltip.call(self, targetElement.element, oldtooltipContainer, oldArrowLayer, oldHelperNumberLayer);
 
         //change active bullet
@@ -762,17 +784,23 @@
       }, 350);
 
     } else {
-      var helperLayer       = document.createElement('div'),
-          referenceLayer    = document.createElement('div'),
-          arrowLayer        = document.createElement('div'),
-          tooltipLayer      = document.createElement('div'),
-          tooltipTextLayer  = document.createElement('div'),
-          bulletsLayer      = document.createElement('div'),
-          progressLayer     = document.createElement('div'),
-          buttonsLayer      = document.createElement('div');
+      var helperLayer               = document.createElement('div'),
+          referenceLayer            = document.createElement('div'),
+          arrowLayer                = document.createElement('div'),
+          tooltipLayer              = document.createElement('div'),
+          tooltipTextLayer          = document.createElement('div'),
+          tooltipStepTitleLayer     = document.createElement('div'),
+          tooltipNextStepTitleLayer = document.createElement('div'),
+          bulletsLayer              = document.createElement('div'),
+          progressLayer             = document.createElement('div'),
+          buttonsLayer              = document.createElement('div');
 
       helperLayer.className = highlightClass;
       referenceLayer.className = 'introjs-tooltipReferenceLayer';
+
+      if (this._options.dock) {
+        referenceLayer.className += ' introjs-docked';
+      }
 
       //set new position to helper layer
       _setHelperLayerPosition.call(self, helperLayer);
@@ -832,8 +860,32 @@
         buttonsLayer.style.display = 'none';
       }
 
+      if (this._options.title) {
+        var introTitleLayer = document.createElement('div');
+        introTitleLayer.className = 'introjs-introtitle';
+        introTitleLayer.innerHTML = this._options.title;
+        tooltipLayer.appendChild(introTitleLayer);
+      }
+
+      tooltipStepTitleLayer.className = 'introjs-steptitle';
+      if (targetElement.title) {
+        tooltipStepTitleLayer.innerHTML = targetElement.title;
+      } else {
+        tooltipStepTitleLayer.style.display = 'none';
+      }
+
+      tooltipNextStepTitleLayer.className = 'introjs-nextsteptitle';
+      var nextStep = this.getNextStep();
+      if (nextStep && nextStep.title) {
+        tooltipNextStepTitleLayer.innerHTML = nextStep.title;
+      } else {
+        tooltipNextStepTitleLayer.style.display = 'none';
+      }
+
       tooltipLayer.className = 'introjs-tooltip';
+      tooltipLayer.appendChild(tooltipStepTitleLayer);
       tooltipLayer.appendChild(tooltipTextLayer);
+      tooltipLayer.appendChild(tooltipNextStepTitleLayer);
       tooltipLayer.appendChild(bulletsLayer);
       tooltipLayer.appendChild(progressLayer);
 
@@ -1202,6 +1254,9 @@
     nextStep: function() {
       _nextStep.call(this);
       return this;
+    },
+    getNextStep: function() {
+      return this._introItems[this._currentStep + 1];
     },
     previousStep: function() {
       _previousStep.call(this);
