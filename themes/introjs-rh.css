@@ -351,3 +351,12 @@ tr.introjs-showElement>th {
 .introjs-nextsteptitle:before {
   content: 'Next: ';
 }
+
+.introjs-minimized .introjs-overlay,
+.introjs-minimized .introjs-tooltip * {
+    display: none;
+}
+
+.introjs-minimized .introjs-tooltip .introjs-introtitle {
+    display: block;
+}

@@ -40,6 +40,8 @@
       skipLabel: 'Skip',
       /* Done button label in tooltip box */
       doneLabel: 'Done',
+      /* Minimize button label in tooltip box */
+      minimizeLabel: '-',
       /* Default tooltip box position */
       tooltipPosition: 'bottom',
       /* Next CSS class for tooltip boxes */
@@ -68,8 +70,10 @@
       positionPrecedence: ['bottom', 'top', 'right', 'left'],
       /* Disable an interaction with element? */
       disableInteraction: false,
-      /* Dock the tour guide */
-      dock: false
+      /* Dock the intro guide */
+      dock: false,
+      /* Allow the intro to be minimized */
+      allowMinimize: false
     };
   }
 
@@ -270,6 +274,7 @@
       }
       return temp;
   }
+
   /**
    * Go to specific step of introduction
    *
@@ -282,6 +287,22 @@
     if (typeof (this._introItems) !== 'undefined') {
       _nextStep.call(this);
     }
+  }
+
+  /**
+   * Toggle the intro minimized state
+   *
+   * @api private
+   * @method _toggleMinimize
+   */
+  function _toggleMinimize() {
+    var minimizedClass = ' introjs-minimized';
+    if (this._isMinimized) {
+      document.body.className = document.body.className.replace(minimizedClass, '');
+    } else {
+      document.body.className += minimizedClass;
+    }
+    this._isMinimized = !this._isMinimized;
   }
 
   /**
@@ -475,7 +496,7 @@
         if (targetOffset.top + tooltipHeight > windowSize.height) {
           // In this case, right would have fallen below the bottom of the screen.
           // Modify so that the bottom of the tooltip connects with the target
-          arrowLayer.className = "introjs-arrow left-bottom";
+          arrowLayer.className = 'introjs-arrow left-bottom';
           tooltipLayer.style.top = "-" + (tooltipHeight - targetOffset.height - 20) + "px"
         }
         arrowLayer.className = 'introjs-arrow left';
@@ -945,6 +966,19 @@
       };
 
       buttonsLayer.appendChild(skipTooltipButton);
+
+      //minimize button
+      if (this._options.allowMinimize) {
+        var minimizeTooltipButton = document.createElement('a');
+        minimizeTooltipButton.className = 'introjs-button introjs-minimizebutton';
+        minimizeTooltipButton.href = 'javascript:void(0);';
+        minimizeTooltipButton.innerHTML = this._options.minimizeLabel;
+
+        minimizeTooltipButton.onclick = function() {
+            _toggleMinimize.call(self);
+        };
+        buttonsLayer.appendChild(minimizeTooltipButton);
+      }
 
       //in order to prevent displaying next/previous button always
       if (this._introItems.length > 1) {
