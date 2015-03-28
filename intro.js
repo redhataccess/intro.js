@@ -704,9 +704,11 @@
 
       //update or reset the helper highlight class
       oldHelperLayer.className = highlightClass;
-      //hide the tooltip
-      oldtooltipContainer.style.opacity = 0;
-      oldtooltipContainer.style.display = "none";
+      if (!this._options.dock) {
+        //hide the tooltip
+        oldtooltipContainer.style.opacity = 0;
+        oldtooltipContainer.style.display = 'none';
+      }
 
       if (oldHelperNumberLayer != null) {
         var lastIntroItem = this._introItems[(targetElement.step - 2 >= 0 ? targetElement.step - 2 : 0)];
