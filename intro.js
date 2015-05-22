@@ -667,7 +667,7 @@
                                         'height:' + (elementPosition.height + widthHeightPadding)  + 'px; ' +
                                         'top:'    + (elementPosition.top    - 5)   + 'px;' +
                                         'left: '  + (elementPosition.left   - 5)   + 'px;');
-
+      _updateScrollPosition(currentElement.element);
     }
   }
 
@@ -1050,24 +1050,28 @@
       parentElm = parentElm.parentNode;
     }
 
-    if (!_elementInViewport(targetElement.element) && this._options.scrollToElement === true) {
-      var rect = targetElement.element.getBoundingClientRect(),
+    _updateScrollPosition(targetElement.element);
+
+    if (typeof (this._introAfterChangeCallback) !== 'undefined') {
+      this._introAfterChangeCallback.call(this, targetElement.element);
+    }
+  }
+
+  function _updateScrollPosition(element) {
+    if (!_elementInViewport(element) && this._options.scrollToElement === true) {
+      var rect = element.getBoundingClientRect(),
         winHeight = _getWinSize().height,
         top = rect.bottom - (rect.bottom - rect.top),
         bottom = rect.bottom - winHeight;
 
       //Scroll up
-      if (top < 0 || targetElement.element.clientHeight > winHeight) {
+      if (top < 0 || element.clientHeight > winHeight) {
         window.scrollBy(0, top - 30); // 30px padding from edge to look nice
 
       //Scroll down
       } else {
         window.scrollBy(0, bottom + 100); // 70px + 30px padding from edge to look nice
       }
-    }
-
-    if (typeof (this._introAfterChangeCallback) !== 'undefined') {
-      this._introAfterChangeCallback.call(this, targetElement.element);
     }
   }
 
