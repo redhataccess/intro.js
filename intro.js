@@ -667,7 +667,7 @@
                                         'height:' + (elementPosition.height + widthHeightPadding)  + 'px; ' +
                                         'top:'    + (elementPosition.top    - 5)   + 'px;' +
                                         'left: '  + (elementPosition.left   - 5)   + 'px;');
-      _updateScrollPosition(currentElement.element);
+      _updateScrollPosition.call(this, currentElement.element);
     }
   }
 
@@ -1050,7 +1050,7 @@
       parentElm = parentElm.parentNode;
     }
 
-    _updateScrollPosition(targetElement.element);
+    _updateScrollPosition.call(this, targetElement.element);
 
     if (typeof (this._introAfterChangeCallback) !== 'undefined') {
       this._introAfterChangeCallback.call(this, targetElement.element);
