@@ -1012,6 +1012,7 @@
       skipTooltipButton.innerHTML = this._options.skipLabel;
     } else if (this._introItems.length - 1 == this._currentStep || this._introItems.length == 1) {
       skipTooltipButton.innerHTML = this._options.doneLabel;
+      skipTooltipButton.className += ' introjs-donebutton';
       prevTooltipButton.className = buttonClass + ' introjs-prevbutton';
       nextTooltipButton.className = buttonClass + ' introjs-nextbutton introjs-disabled';
       nextTooltipButton.tabIndex = '-1';
