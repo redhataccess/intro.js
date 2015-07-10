@@ -1315,9 +1315,8 @@
     refresh: function() {
       _setHelperLayerPosition.call(this, document.querySelector('.introjs-helperLayer'));
       _setHelperLayerPosition.call(this, document.querySelector('.introjs-tooltipReferenceLayer'));
-      var disableInteractionLayer = targetElement.querySelector('.introjs-disableInteraction');
-      if (disableInteractionLayer) {
-        _setHelperLayerPosition.call(this, disableInteractionLayer);
+      if (this._options.disableInteraction === true) {
+        _disableInteraction.call(this);
       }
       return this;
     },
